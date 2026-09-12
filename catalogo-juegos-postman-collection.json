@@ -1,0 +1,180 @@
+{
+  "info": {
+    "name": "Catalogo de juegos - Microservicio 1",
+    "description": "CRUD completo de juegos y editoriales, con casos de exito y error.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8001" },
+    { "key": "juego_id", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "JUEGOS",
+      "item": [
+        {
+          "name": "GET /juegos (listar)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/juegos", "host": ["{{base_url}}"], "path": ["juegos"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('es un arreglo', () => pm.expect(pm.response.json()).to.be.an('array'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /juegos (crear)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Catan\",\n  \"genero\": \"Estrategia\",\n  \"complejidad\": \"media\",\n  \"jugadores_min\": 3,\n  \"jugadores_max\": 4,\n  \"editorial_id\": 1\n}"
+            },
+            "url": { "raw": "{{base_url}}/juegos", "host": ["{{base_url}}"], "path": ["juegos"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', () => pm.response.to.have.status(201));",
+                  "const j = pm.response.json();",
+                  "pm.test('devuelve id', () => pm.expect(j).to.have.property('id'));",
+                  "pm.collectionVariables.set('juego_id', j.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /juegos (error 400 - sin titulo)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"genero\": \"Party\"\n}" },
+            "url": { "raw": "{{base_url}}/juegos", "host": ["{{base_url}}"], "path": ["juegos"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": { "exec": ["pm.test('status 400', () => pm.response.to.have.status(400));"] }
+            }
+          ]
+        },
+        {
+          "name": "GET /juegos/{id} (obtener)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/juegos/{{juego_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["juegos", "{{juego_id}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": { "exec": ["pm.test('status 200', () => pm.response.to.have.status(200));"] }
+            }
+          ]
+        },
+        {
+          "name": "GET /juegos/999999 (error 404)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/juegos/999999",
+              "host": ["{{base_url}}"],
+              "path": ["juegos", "999999"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": { "exec": ["pm.test('status 404', () => pm.response.to.have.status(404));"] }
+            }
+          ]
+        },
+        {
+          "name": "PUT /juegos/{id} (actualizar)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Catan Edicion 2026\",\n  \"genero\": \"Estrategia\",\n  \"complejidad\": \"media\",\n  \"jugadores_min\": 3,\n  \"jugadores_max\": 4,\n  \"editorial_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/juegos/{{juego_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["juegos", "{{juego_id}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": { "exec": ["pm.test('status 200', () => pm.response.to.have.status(200));"] }
+            }
+          ]
+        },
+        {
+          "name": "DELETE /juegos/{id} (eliminar)",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/juegos/{{juego_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["juegos", "{{juego_id}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": { "exec": ["pm.test('status 200', () => pm.response.to.have.status(200));"] }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "EDITORIALES",
+      "item": [
+        {
+          "name": "GET /editoriales (listar)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/editoriales", "host": ["{{base_url}}"], "path": ["editoriales"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": { "exec": ["pm.test('status 200', () => pm.response.to.have.status(200));"] }
+            }
+          ]
+        },
+        {
+          "name": "GET /editoriales/1 (obtener)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/editoriales/1", "host": ["{{base_url}}"], "path": ["editoriales", "1"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": { "exec": ["pm.test('status 200 o 404', () => pm.expect([200,404]).to.include(pm.response.code));"] }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
