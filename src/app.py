@@ -16,8 +16,8 @@ def create_app():
     app.register_blueprint(juegos_bp)
     app.register_blueprint(editoriales_bp)
 
-    @app.route("/")
+    @app.route("/health")
     def health():
-        return jsonify({"servicio": "catalogo-juegos", "estado": "ok"}), 200
-
+        return jsonify({"status": "ok"}), 200
+        
     return app
